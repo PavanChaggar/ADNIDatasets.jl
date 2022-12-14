@@ -24,7 +24,7 @@ struct ADNIDataset
     rois::Vector{String}
 end
 
-function ADNISubject(subid, df, dktnames, reference_region)
+function ADNISubject(subid, df, dktnames, reference_region::String)
     sub = filter( x -> x.RID == subid, df )
 
     subdate = sub[!, :EXAMDATE] 
