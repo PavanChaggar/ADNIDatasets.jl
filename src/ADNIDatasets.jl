@@ -1,12 +1,8 @@
 module ADNIDatasets
 
-using Connectomes
 using CSV, DataFrames
-using DrWatson: projectdir
-using BenchmarkTools
 using Setfield
 using Dates
-using MCMCChains, ArviZ
 
 struct ADNIScanData
     Date::Date
