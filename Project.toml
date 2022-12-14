@@ -1,0 +1,4 @@
+name = "ADNIDatasets"
+uuid = "3276ce4d-5fec-4d11-86fe-35d359dbefae"
+authors = ["Pavan Chaggar <56822454+PavanChaggar@users.noreply.github.com>"]
+version = "0.1.0"
