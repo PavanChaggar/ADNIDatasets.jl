@@ -27,7 +27,7 @@ end
 function ADNISubject(subid, df, dktnames, reference_region::String)
     sub = filter( x -> x.RID == subid, df )
 
-    subdate = sub[!, :EXAMDATE] 
+    subdate = sub[!, :EXAMDATE]
     subsuvr = sub[!, suvr_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
     subvol = sub[!, vol_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
     subref = sub[!, suvr_name.(reference_region)]
@@ -119,7 +119,7 @@ function get_id(data::ADNISubject)
     get(data, @lens _.ID)
 end
 
-function get_ids(data::ADNIDataset)
+function get_id(data::ADNIDataset)
     [get_id(data, i) for i in 1:length(data)]
 end
 
@@ -166,4 +166,8 @@ end
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
 
+# Exports
+export ADNIDataset
+export get_suvr, get_suvr_ref, get_vol, get_times, 
+       get_id, calc_suvr, get_initial_conditions
 end # module ADNIDatasets
