@@ -14,6 +14,9 @@ jobs:
         julia-version: ['1.8-nightly', 'nightly']
         julia-arch: [x64, x86]
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        exclude:
+          - os: macOS-latest
+            julia-arch: x86
 
     steps:
       - uses: actions/checkout@v2
