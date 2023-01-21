@@ -42,11 +42,11 @@ function ADNISubject(subid, df, dktnames, reference_region::String)
     end
 end
 
-function ADNIDataset(df, dktnames; min_scans=3, reference_region="inferiorcerebellum")
+function ADNIDataset(df, dktnames; min_scans=3, max_scans=Inf, reference_region="inferiorcerebellum")
     subjects = unique(df.RID)
 
     n_scans = [count(==(sub), df.RID) for sub in subjects]
-    multi_subs = subjects[findall(x -> x >= min_scans, n_scans)]
+    multi_subs = subjects[findall(x -> min_scans <= x <= max_scans, n_scans)]
 
     adnisubjects = Vector{ADNISubject}()
     for sub in multi_subs 
