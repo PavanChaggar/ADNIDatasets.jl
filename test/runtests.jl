@@ -15,11 +15,13 @@ dktdf = CSV.read(dktpath, DataFrame)
 
 data_scans_3 = ADNIDataset(datadf, dktdf.region; min_scans=3)
 data_scans_1 = ADNIDataset(datadf, dktdf.region; min_scans=1)
+data_scans_2 = ADNIDataset(datadf, dktdf.region; min_scans=2, max_scans=2)
 
 @testset "ADNIDatasets.jl" begin
     # test number of subjects are correct
     @test length(data_scans_3) == 2
     @test length(data_scans_1) == 3
+    @test length(data_scans_2) == 1
 
     suvr = get_suvr(data_scans_3, 1)
     vols = get_vol(data_scans_3, 1)
