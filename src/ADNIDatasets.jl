@@ -151,7 +151,12 @@ function calc_suvr(data::ADNIDataset, subject; max_norm = false)
     calc_suvr(subdata; max_norm = max_norm)
 end
 
-function get_initial_conditions(data, subject)
+function get_initial_conditions(data::ADNISubject)
+    data = calc_suvr(data)
+    data[:,1]
+end
+
+function get_initial_conditions(data::ADNIDataset, subject)
     data = calc_suvr(data, subject)
     data[:,1]
 end
