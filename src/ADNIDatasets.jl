@@ -183,6 +183,9 @@ Base.IteratorEltype(d::ADNIDataset) = Base.HasEltype()
 function Base.length(data::ADNIDataset)
     get(data, @lens _.n_subjects)
 end
+function Base.length(data::ADNISubject)
+    get(data, @lens _.n_scans)
+end
 
 # Exports
 export ADNIDataset
