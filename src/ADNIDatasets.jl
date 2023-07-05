@@ -185,6 +185,8 @@ end
 
 Base.eltype(d::ADNIDataset) = ADNISubject
 Base.IteratorEltype(d::ADNIDataset) = Base.HasEltype()
+Base.keys(d::ADNIDataset) = LinearIndices(1:length(d))
+Base.values(d::ADNIDataset) = d.SubjectData
 function Base.length(data::ADNIDataset)
     get(data, @lens _.n_subjects)
 end
