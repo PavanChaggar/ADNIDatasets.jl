@@ -62,6 +62,10 @@ function ADNIDataset(df, dktnames; min_scans=3, max_scans=Inf, reference_region=
     )
 end
 
+function ADNIDataset(data::ADNIDataset, subset::Vector{Int64})
+    ADNIDataset(length(subset), data.SubjectData[subset], data.rois)
+end
+
 function get_subject_data(data::ADNIDataset, subject)
     lns = @lens _.SubjectData[subject]
     get(data, lns)
@@ -99,8 +103,16 @@ function get_vol(data::ADNIDataset, subject)
     get_vol(subdata)
 end
 
+function get_dates(data::ADNISubject)
+    get(data, @lens _.scan_dates)
+end
+function get_dates(data::ADNIDataset, subject)
+    subdata = get_subject_data(data, subject)
+    get_dates(subdata)
+end
+
 function get_times(data::ADNISubject)
-    dates = data.scan_dates
+    dates = get_dates(data)
     days = dates .- minimum(dates)
     [get(day, @lens _.value) for day in days] ./ 365
 end
@@ -174,6 +186,6 @@ end
 
 # Exports
 export ADNIDataset
-export get_suvr, get_suvr_ref, get_vol, get_times, 
+export get_suvr, get_suvr_ref, get_vol, get_dates, get_times, 
        get_id, calc_suvr, get_initial_conditions
 end # module ADNIDatasets
