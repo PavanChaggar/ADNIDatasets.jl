@@ -144,10 +144,6 @@ function get_initial_conditions(data, subject)
     data[:,1]
 end
 
-function Base.length(data::ADNIDataset)
-    get(data, @lens _.n_subjects)
-end
-
 function Base.show(io::IO, data::ADNIDataset)
     n_subs = data.n_subjects
     n_scans = sum([sub.n_scans for sub in data.SubjectData])
@@ -165,6 +161,16 @@ end
 
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
+
+function Base.iterate(d::ADNIDataset, state=1)
+    state > length(d) ? nothing : (d.SubjectData[state], state+1)
+end
+
+Base.eltype(d::ADNIDataset) = ADNISubject
+Base.IteratorEltype(d::ADNIDataset) = Base.HasEltype()
+function Base.length(data::ADNIDataset)
+    get(data, @lens _.n_subjects)
+end
 
 # Exports
 export ADNIDataset
