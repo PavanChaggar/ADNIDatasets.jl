@@ -62,7 +62,7 @@ function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, refere
     )
 end
 
-function ADNIDataset(data::ADNIDataset, subset::Vector{Int64})
+function ADNIDataset(data::ADNIDataset, subset)
     ADNIDataset(length(subset), data.SubjectData[subset], data.rois)
 end
 
