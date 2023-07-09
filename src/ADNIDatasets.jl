@@ -24,7 +24,7 @@ struct ADNIDataset
     rois::Vector{String}
 end
 
-function ADNISubject(subid, df, dktnames, reference_region::String)
+function ADNISubject(subid, df::DataFrame, dktnames, reference_region::String)
     sub = filter( x -> x.RID == subid, df )
 
     subdate = sub[!, :EXAMDATE]
@@ -42,7 +42,7 @@ function ADNISubject(subid, df, dktnames, reference_region::String)
     end
 end
 
-function ADNIDataset(df, dktnames; min_scans=3, max_scans=Inf, reference_region="inferiorcerebellum")
+function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum")
     subjects = unique(df.RID)
 
     n_scans = [count(==(sub), df.RID) for sub in subjects]
