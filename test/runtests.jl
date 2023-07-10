@@ -45,7 +45,10 @@ data_scans_2 = ADNIDataset(datadf, dktdf.region; min_scans=2, max_scans=2)
     @test length(initial_conditions) == 83
     @test initial_conditions == suvr_ref[:,1]
 
-    _test_subset = ADNIDataset(data_scans_1, [1, 3])
-    @test _test_subset isa ADNIDataset
-    @test get_id.(_test_subset) == [1, 3]
+    # testing indexing and filtering
+    _idx_subset = data_scans_1[[2, 3]]
+    _filter_subset = filter(x -> length(x) > 2, data_scans_1)
+    @test _idx_subset isa ADNIDataset
+    @test get_id.(_idx_subset) == [2, 3]
+    @test get_id.(_idx_subset) == get_id.(_filter_subset)
 end

@@ -62,10 +62,6 @@ function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, refere
     )
 end
 
-function ADNIDataset(data::ADNIDataset, subset)
-    ADNIDataset(length(subset), data.SubjectData[subset], data.rois)
-end
-
 function get_subject_data(data::ADNIDataset, subject)
     lns = @lens _.SubjectData[subject]
     get(data, lns)
@@ -181,6 +177,10 @@ vol_name(roi) = uppercase("$(roi)" * "_volume")
 
 function Base.getindex(data::ADNIDataset, idx::Int64)
     return data.SubjectData[idx]
+end
+
+function Base.getindex(data::ADNIDataset, idx::Vector{Int64})
+    return ADNIDataset(length(idx), data.SubjectData[idx], data.rois)
 end
 
 function Base.iterate(d::ADNIDataset, state=1)
