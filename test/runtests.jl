@@ -22,7 +22,8 @@ data_scans_2 = ADNIDataset(datadf, dktdf.region; min_scans=2, max_scans=2)
     @test length(data_scans_3) == 2
     @test length(data_scans_1) == 3
     @test length(data_scans_2) == 1
-
+    
+    @test data_scans_3[1] isa ADNISubject
     suvr = get_suvr(data_scans_3, 1)
     vols = get_vol(data_scans_3, 1)
     suvr_ref = calc_suvr(data_scans_3, 1)
