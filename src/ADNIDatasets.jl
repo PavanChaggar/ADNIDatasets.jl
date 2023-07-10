@@ -179,8 +179,12 @@ end
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
 
+function Base.getindex(data::ADNIDataset, idx::Int64)
+    return data.SubjectData[idx]
+end
+
 function Base.iterate(d::ADNIDataset, state=1)
-    state > length(d) ? nothing : (d.SubjectData[state], state+1)
+    state > length(d) ? nothing : (d[state], state+1)
 end
 
 Base.eltype(d::ADNIDataset) = ADNISubject
