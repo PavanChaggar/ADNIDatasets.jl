@@ -198,6 +198,11 @@ function Base.length(data::ADNISubject)
     get(data, @lens _.n_scans)
 end
 
+function Base.filter(func, data::ADNIDataset)
+    d = Iterators.filter(func, data) |> collect
+    ADNIDataset(length(d), d, data.rois)
+end
+
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
 export get_suvr, get_suvr_ref, get_vol, get_dates, get_times, 
