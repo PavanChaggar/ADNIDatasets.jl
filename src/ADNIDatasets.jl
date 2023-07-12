@@ -175,11 +175,11 @@ end
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
 
-function Base.getindex(data::ADNIDataset, idx::Int64)
+function Base.getindex(data::ADNIDataset, idx::Int)
     return data.SubjectData[idx]
 end
 
-function Base.getindex(data::ADNIDataset, idx::Vector{Int64})
+function Base.getindex(data::ADNIDataset, idx::Vector{Int})
     return ADNIDataset(length(idx), data.SubjectData[idx], data.rois)
 end
 
