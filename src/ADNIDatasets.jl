@@ -26,8 +26,12 @@ end
 
 function ADNISubject(subid, df::DataFrame, dktnames, reference_region::String)
     sub = filter( x -> x.RID == subid, df )
-
-    subdate = sub[!, :EXAMDATE]
+    
+    if "EXAMDATE" ∈ names(sub)
+        subdate = sub[!, :EXAMDATE]
+    elseif "SCANDATE" ∈ names(sub)
+        subdate = sub[!, :SCANDATE]
+    end
     subsuvr = sub[!, suvr_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
     subvol = sub[!, vol_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
     subref = sub[!, suvr_name.(reference_region)]
