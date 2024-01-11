@@ -8,14 +8,12 @@ using Test
 
 testpath = dirname(relpath(@__FILE__))
 datapath = joinpath(testpath, "adni-test.csv")
-dktpath = joinpath(testpath, "dktnames.csv")
 
 datadf = CSV.read(datapath, DataFrame)
-dktdf = CSV.read(dktpath, DataFrame)
 
-data_scans_3 = ADNIDataset(datadf, dktdf.region; min_scans=3)
-data_scans_1 = ADNIDataset(datadf, dktdf.region; min_scans=1)
-data_scans_2 = ADNIDataset(datadf, dktdf.region; min_scans=2, max_scans=2)
+data_scans_3 = ADNIDataset(datadf; min_scans=3)
+data_scans_1 = ADNIDataset(datadf; min_scans=1)
+data_scans_2 = ADNIDataset(datadf; min_scans=2, max_scans=2)
 
 @testset "ADNIDatasets.jl" begin
     # test number of subjects are correct

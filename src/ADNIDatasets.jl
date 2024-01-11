@@ -4,6 +4,8 @@ using CSV, DataFrames
 using Setfield
 using Dates
 
+include("dktnames.jl")
+
 struct ADNIScanData
     Date::Date
     SUVR::Vector{Float64}
@@ -24,7 +26,7 @@ struct ADNIDataset
     rois::Vector{String}
 end
 
-function ADNISubject(subid, df::DataFrame, dktnames, reference_region::String)
+function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String)
     sub = filter( x -> x.RID == subid, df )
     
     if "EXAMDATE" ∈ names(sub)
@@ -32,8 +34,8 @@ function ADNISubject(subid, df::DataFrame, dktnames, reference_region::String)
     elseif "SCANDATE" ∈ names(sub)
         subdate = sub[!, :SCANDATE]
     end
-    subsuvr = sub[!, suvr_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
-    subvol = sub[!, vol_name.(dktnames)] |> dropmissing |> disallowmissing |> Array
+    subsuvr = sub[!, suvr_name.(roi_names)] |> dropmissing |> disallowmissing |> Array
+    subvol = sub[!, vol_name.(roi_names)] |> dropmissing |> disallowmissing |> Array
     subref = sub[!, suvr_name.(reference_region)]
     n_scans = length(subdate)
     if n_scans == size(subsuvr, 1) == size(subvol, 1)
@@ -46,7 +48,7 @@ function ADNISubject(subid, df::DataFrame, dktnames, reference_region::String)
     end
 end
 
-function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum")
+function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum")
     subjects = unique(df.RID)
 
     n_scans = [count(==(sub), df.RID) for sub in subjects]
@@ -54,7 +56,7 @@ function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, refere
 
     adnisubjects = Vector{ADNISubject}()
     for sub in multi_subs 
-        sub = ADNISubject(sub, df, dktnames, reference_region)
+        sub = ADNISubject(sub, df, roi_names, reference_region)
         if sub isa ADNISubject
             push!(adnisubjects, sub)
         end
@@ -62,7 +64,7 @@ function ADNIDataset(df::DataFrame, dktnames; min_scans=1, max_scans=Inf, refere
     ADNIDataset(
         length(adnisubjects),
         adnisubjects,
-        dktnames
+        roi_names
     )
 end
 
