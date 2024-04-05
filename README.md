@@ -14,10 +14,26 @@ There are three main types defined by `ADNIDatasets.jl`, each defining different
 
 # Example
 
-First, download the pre-analysed ADNI .csv data. This can then be loaded into an `ADNIDataset`. 
+First, download the pre-analysed ADNI .csv data. . This can then be loaded into an `ADNIDataset`. 
 
+```julia
+julia> using ADNIDatasets, DataFrames, CSV
+
+julia> data_df = CSV.read("/path/to/adni/data.csv", DataFrame)
+
+julia> data = ADNIDataset(data_df)
 ```
-filepath = /path/to/adni/data.csv
 
-data = ADNIDataset(filepath)
+By default this will load data with fieldnames from the FreeSurfer DKT atlas. If we wished to change this we can enter a second position argument containing a `Vector{String}` of names that correspond to column names in `data_df`.
+
+There are additional keyword arguments that can be used. 
+
+```julia
+julia> data = ADNIDataset(data_df; min_scans = 1, max_scans = 3, reference_region="inferiorcerebellum")
+```
+
+`min_scans` and `max_scans` can be used to filter subejcts by the number of scans they have. By default `min_scans = 1` and `max_scans = Inf`. The reference region can be used to set which region is used for standardising PET data. By default the reference region is given by `reference_region="inferiocerebellum"`, which is commonly used for tau PET data. This can be changed depending on the tracer; for example, for amyloid-beta PET, ADNI supply a composite reference region and this can be set like so: 
+
+```julia
+julia> data = ADNIDataset(data_df; reference_region="COMPOSITE_REF")
 ```
