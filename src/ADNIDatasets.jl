@@ -10,8 +10,8 @@ struct ADNIScanData
     Date::Date
     SUVR::Vector{Float64}
     Volume::Vector{Float64}
-    SUVR_Ref::Float64
-    SUVR_Vol::Float64
+    Ref_SUVR::Float64
+    Vol_SUVR::Float64
 end
 
 struct ADNISubject
@@ -94,6 +94,15 @@ end
 function get_ref_suvr(data::ADNIDataset, subject)
     subdata = get_subject_data(data, subject)
     get_ref_suvr(subdata)
+end
+
+function get_ref_vol(data::ADNISubject)
+    reduce(vcat, [get(data , @lens _.Data[i].Ref_Vol) for i in 1:data.n_scans])
+end
+
+function get_ref_vol(data::ADNIDataset, subject)
+    subdata = get_subject_data(data, subject)
+    get_ref_vol(subdata)
 end
 
 function get_norm_suvr(data, subject)
