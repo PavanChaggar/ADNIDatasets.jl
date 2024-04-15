@@ -11,6 +11,7 @@ struct ADNIScanData
     SUVR::Vector{Float64}
     Volume::Vector{Float64}
     SUVR_Ref::Float64
+    SUVR_Vol::Float64
 end
 
 struct ADNISubject
@@ -36,14 +37,16 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String)
     end
     subsuvr = sub[!, suvr_name.(roi_names)] |> dropmissing |> disallowmissing |> Array
     subvol = sub[!, vol_name.(roi_names)] |> dropmissing |> disallowmissing |> Array
-    subref = sub[!, suvr_name.(reference_region)]
+    subref_suvr = sub[!, suvr_name.(reference_region)]
+    subref_vol = sub[!, vol_name.(reference_region)]
     n_scans = length(subdate)
     if n_scans == size(subsuvr, 1) == size(subvol, 1)
        return  ADNISubject(
                 subid,
                 n_scans,
                 subdate,
-                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subref[i]) for i in 1:n_scans]
+                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], 
+                              subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
         )
     end
 end
@@ -84,13 +87,13 @@ function get_suvr(data::ADNIDataset, subject)
     get_suvr(subdata)
 end
 
-function get_suvr_ref(data::ADNISubject)
-    reduce(vcat, [get(data , @lens _.Data[i].SUVR_Ref) for i in 1:data.n_scans])
+function get_ref_suvr(data::ADNISubject)
+    reduce(vcat, [get(data , @lens _.Data[i].Ref_SUVR) for i in 1:data.n_scans])
 end
 
-function get_suvr_ref(data::ADNIDataset, subject)
+function get_ref_suvr(data::ADNIDataset, subject)
     subdata = get_subject_data(data, subject)
-    get_suvr_ref(subdata)
+    get_ref_suvr(subdata)
 end
 
 function get_norm_suvr(data, subject)
@@ -141,7 +144,7 @@ end
 
 function calc_suvr(data::ADNISubject; max_norm = false)
     suvr = get_suvr(data)
-    ref = get_suvr_ref(data)
+    ref = get_ref_suvr(data)
     data = suvr ./ ref'
     if max_norm
         return data ./ maximum(data)
@@ -213,6 +216,6 @@ end
 
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
-export get_suvr, get_suvr_ref, get_vol, get_dates, get_times, 
+export get_suvr, get_ref_suvr, get_vol, get_dates, get_times, 
        get_id, calc_suvr, get_initial_conditions
 end # module ADNIDatasets
