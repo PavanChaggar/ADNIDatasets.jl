@@ -225,6 +225,6 @@ end
 
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
-export get_suvr, get_ref_suvr, get_vol, get_dates, get_times, 
+export get_suvr, get_ref_suvr, get_ref_vol, get_vol, get_dates, get_times, 
        get_id, calc_suvr, get_initial_conditions
 end # module ADNIDatasets
