@@ -11,7 +11,7 @@ struct ADNIScanData
     SUVR::Vector{Float64}
     Volume::Vector{Float64}
     Ref_SUVR::Float64
-    Vol_SUVR::Float64
+    Ref_Vol::Float64
 end
 
 struct ADNISubject
