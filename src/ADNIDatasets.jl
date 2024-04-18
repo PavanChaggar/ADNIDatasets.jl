@@ -51,17 +51,21 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String)
     end
 end
 
-function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum")
+function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum", qc=true)
     
-    qc_df = filter(x -> x.qc_flag == 2, df) # check QC status
+    if qc
+        sub_df = filter(x -> x.qc_flag == 2, df) # check QC status
+    else
+        sub_df = df
+    end 
     
     subjects = unique(df.RID)
-    n_scans = [count(==(sub), qc_df.RID) for sub in subjects]
+    n_scans = [count(==(sub), sub_df.RID) for sub in subjects]
     multi_subs = subjects[findall(x -> min_scans <= x <= max_scans, n_scans)]
 
     adnisubjects = Vector{ADNISubject}()
     for sub in multi_subs 
-        sub = ADNISubject(sub, qc_df, roi_names, reference_region)
+        sub = ADNISubject(sub, sub_df, roi_names, reference_region)
         if sub isa ADNISubject
             push!(adnisubjects, sub)
         end
