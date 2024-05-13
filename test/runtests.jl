@@ -11,9 +11,9 @@ datapath = joinpath(testpath, "adni-test.csv")
 
 datadf = CSV.read(datapath, DataFrame)
 
-data_scans_3 = ADNIDataset(datadf; min_scans=3)
-data_scans_1 = ADNIDataset(datadf; min_scans=1)
-data_scans_2 = ADNIDataset(datadf; min_scans=2, max_scans=2)
+data_scans_3 = ADNIDataset(datadf; min_scans=3, qc=false)
+data_scans_1 = ADNIDataset(datadf; min_scans=1, qc=false)
+data_scans_2 = ADNIDataset(datadf; min_scans=2, max_scans=2, qc=false)
 
 @testset "ADNIDatasets.jl" begin
     # test number of subjects are correct
