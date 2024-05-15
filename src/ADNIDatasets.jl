@@ -54,7 +54,7 @@ end
 function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum", qc=true)
     
     if qc
-        filter!(x -> x.qc_flag == 2, df) # check QC status
+        df = filter(x -> x.qc_flag == 2, df) # check QC status
     end
     
     subjects = unique(df.RID)
