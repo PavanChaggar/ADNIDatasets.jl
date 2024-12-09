@@ -17,4 +17,4 @@ Connectomes = "55f7864d-8a34-467b-8299-a15693780429"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 
 [extensions]
-ADNIDashboardExt = ["Makie", "Connectomes"]
+ADNIDashboardExt = ["Makie", "Connectomes", "Colors", "ColorSchemes"]
