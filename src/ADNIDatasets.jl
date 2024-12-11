@@ -15,14 +15,14 @@ struct ADNIScanData
 end
 
 struct ADNISubject
-    ID::Int64
-    n_scans::Int64
+    ID::Int
+    n_scans::Int
     scan_dates::Vector{Date}
     Data::Vector{ADNIScanData}
 end
 
 struct ADNIDataset
-    n_subjects::Int64
+    n_subjects::Int
     SubjectData::Vector{ADNISubject}
     rois::Vector{String}
 end
