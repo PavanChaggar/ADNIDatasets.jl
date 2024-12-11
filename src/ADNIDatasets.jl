@@ -209,6 +209,11 @@ function Base.getindex(data::ADNIDataset, idx::Vector{Int})
     return ADNIDataset(length(idx), data.SubjectData[idx], data.rois)
 end
 
+function Base.getindex(data::ADNIDataset, idx::UnitRange{Int})
+    _idx = collect(idx)
+    return ADNIDataset(length(idx), data.SubjectData[_idx], data.rois)
+end
+
 function Base.iterate(d::ADNIDataset, state=1)
     state > length(d) ? nothing : (d[state], state+1)
 end
@@ -220,6 +225,8 @@ Base.values(d::ADNIDataset) = d.SubjectData
 function Base.length(data::ADNIDataset)
     get(data, @lens _.n_subjects)
 end
+
+Base.lastindex(d::ADNIDataset) = length(d)
 
 function Base.filter(func, data::ADNIDataset)
     d = Iterators.filter(func, data) |> collect
@@ -237,6 +244,11 @@ function Base.getindex(sub::ADNISubject, idx::Vector{Int})
     return ADNISubject(sub.ID, length(idx), sub.scan_dates[idx], sub.Data[idx])
 end
 
+function Base.getindex(sub::ADNISubject, idx::UnitRange{Int})
+    _idx = collect(idx)
+    return ADNISubject(sub.ID, length(idx), sub.scan_dates[_idx], sub.Data[_idx])
+end
+
 function Base.iterate(d::ADNISubject, state=1)
     state > length(d) ? nothing : (d[state], state+1)
 end
@@ -244,6 +256,8 @@ end
 function Base.length(data::ADNISubject)
     get(data, @lens _.n_scans)
 end
+
+Base.lastindex(d::ADNISubject) = length(d)
 
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
