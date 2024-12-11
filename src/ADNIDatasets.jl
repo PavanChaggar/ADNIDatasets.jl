@@ -197,6 +197,10 @@ end
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
 
+# ------------------------------------------------------------
+# ADNI Dataset iteration
+# ------------------------------------------------------------
+
 function Base.getindex(data::ADNIDataset, idx::Int)
     return data.SubjectData[idx]
 end
@@ -216,13 +220,29 @@ Base.values(d::ADNIDataset) = d.SubjectData
 function Base.length(data::ADNIDataset)
     get(data, @lens _.n_subjects)
 end
-function Base.length(data::ADNISubject)
-    get(data, @lens _.n_scans)
-end
 
 function Base.filter(func, data::ADNIDataset)
     d = Iterators.filter(func, data) |> collect
     ADNIDataset(length(d), d, data.rois)
+end
+
+# ------------------------------------------------------------
+# ADNI Subject iteration
+# ------------------------------------------------------------
+function Base.getindex(sub::ADNISubject, idx::Int)
+    return sub.Data[idx]
+end
+
+function Base.getindex(sub::ADNISubject, idx::Vector{Int})
+    return ADNISubject(sub.ID, length(idx), sub.scan_dates[idx], sub.Data[idx])
+end
+
+function Base.iterate(d::ADNISubject, state=1)
+    state > length(d) ? nothing : (d[state], state+1)
+end
+
+function Base.length(data::ADNISubject)
+    get(data, @lens _.n_scans)
 end
 
 # Exports
