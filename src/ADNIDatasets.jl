@@ -259,8 +259,13 @@ end
 
 Base.lastindex(d::ADNISubject) = length(d)
 
+# Dashboard
+function data_dashboard end
+
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
 export get_suvr, get_ref_suvr, get_ref_vol, get_vol, get_dates, get_times, 
        get_id, calc_suvr, get_initial_conditions
+export data_dashboard
+
 end # module ADNIDatasets
