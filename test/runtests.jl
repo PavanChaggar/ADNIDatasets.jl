@@ -49,4 +49,12 @@ data_scans_2 = ADNIDataset(datadf; min_scans=2, max_scans=2, qc=false)
     @test _idx_subset isa ADNIDataset
     @test get_id.(_idx_subset) == [2, 3]
     @test get_id.(_idx_subset) == get_id.(_filter_subset)
+    @test get_id.(data_scans_1[2:end]) == get_id.(data_scans_1[[2,3]])
+
+    # testing indexing of ADNISubject
+    @test data_scans_1[2][1] isa ADNIScanData
+    @test data_scans_1[2][[1,2]] isa ADNISubject
+    @test length(data_scans_1[2][[1,2]]) == 2
+    @test data_scans_1[2][[1,2]][1].Date == data_scans_1[2][1].Date
+    @test allequal(get_dates(data_scans_1[2][[2,3]]) .== get_dates(data_scans_1[2][2:end]))
 end

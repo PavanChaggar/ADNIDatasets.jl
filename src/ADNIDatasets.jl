@@ -15,14 +15,14 @@ struct ADNIScanData
 end
 
 struct ADNISubject
-    ID::Int64
-    n_scans::Int64
+    ID::Int
+    n_scans::Int
     scan_dates::Vector{Date}
     Data::Vector{ADNIScanData}
 end
 
 struct ADNIDataset
-    n_subjects::Int64
+    n_subjects::Int
     SubjectData::Vector{ADNISubject}
     rois::Vector{String}
 end
@@ -197,12 +197,21 @@ end
 suvr_name(roi) = uppercase("$(roi)" * "_suvr")
 vol_name(roi) = uppercase("$(roi)" * "_volume")
 
+# ------------------------------------------------------------
+# ADNI Dataset iteration
+# ------------------------------------------------------------
+
 function Base.getindex(data::ADNIDataset, idx::Int)
     return data.SubjectData[idx]
 end
 
 function Base.getindex(data::ADNIDataset, idx::Vector{Int})
     return ADNIDataset(length(idx), data.SubjectData[idx], data.rois)
+end
+
+function Base.getindex(data::ADNIDataset, idx::UnitRange{Int})
+    _idx = collect(idx)
+    return ADNIDataset(length(idx), data.SubjectData[_idx], data.rois)
 end
 
 function Base.iterate(d::ADNIDataset, state=1)
@@ -216,16 +225,43 @@ Base.values(d::ADNIDataset) = d.SubjectData
 function Base.length(data::ADNIDataset)
     get(data, @lens _.n_subjects)
 end
-function Base.length(data::ADNISubject)
-    get(data, @lens _.n_scans)
-end
+
+Base.lastindex(d::ADNIDataset) = length(d)
 
 function Base.filter(func, data::ADNIDataset)
     d = Iterators.filter(func, data) |> collect
     ADNIDataset(length(d), d, data.rois)
 end
 
+# ------------------------------------------------------------
+# ADNI Subject iteration
+# ------------------------------------------------------------
+function Base.getindex(sub::ADNISubject, idx::Int)
+    return sub.Data[idx]
+end
+
+function Base.getindex(sub::ADNISubject, idx::Vector{Int})
+    return ADNISubject(sub.ID, length(idx), sub.scan_dates[idx], sub.Data[idx])
+end
+
+function Base.getindex(sub::ADNISubject, idx::UnitRange{Int})
+    _idx = collect(idx)
+    return ADNISubject(sub.ID, length(idx), sub.scan_dates[_idx], sub.Data[_idx])
+end
+
+function Base.iterate(d::ADNISubject, state=1)
+    state > length(d) ? nothing : (d[state], state+1)
+end
+
+function Base.length(data::ADNISubject)
+    get(data, @lens _.n_scans)
+end
+
+Base.lastindex(d::ADNISubject) = length(d)
+
+# Dashboard
 function data_dashboard end
+
 # Exports
 export ADNIDataset, ADNISubject, ADNIScanData
 export get_suvr, get_ref_suvr, get_ref_vol, get_vol, get_dates, get_times, 
