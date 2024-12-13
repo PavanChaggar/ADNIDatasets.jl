@@ -26,11 +26,13 @@ function normalise!(data, lower, upper)
 end
 
 function ADNIDatasets.data_dashboard(data::ADNIDataset, u0, ui; cmap=ColorSchemes.viridis, show_mtl_threshold = true, mtl_threshold=1.375)
-
+    
     right_cortical_nodes = get_node_id.(get_right_cortex(get_cortex()))
     right_cortical_nodes_labels = get_label.(get_right_cortex(get_cortex()))
 
     n_subjects = length(data)
+    
+    max_time = maximum(reduce(vcat, get_times.(data)))
     
     data_all = calc_suvr.(data)
     [normalise!(data_all[i], u0, ui) for i in 1:n_subjects]
@@ -86,8 +88,8 @@ function ADNIDatasets.data_dashboard(data::ADNIDataset, u0, ui; cmap=ColorScheme
             ylabel="b.c. SUVR", ylabelsize = 20, yminorticksvisible = true,
             yminorgridvisible = true,
     )
-    ylims!(ax, 1.0, 4.0)
-    xlims!(ax, 0.0, 5.0)
+    ylims!(ax, minimum(u0)-0.05, maximum(ui)+0.05)
+    xlims!(ax, 0.0, max_time)
     x = Observable(0.0)
     vlines!(ax, x, color=(:red, 0.5), linewidth=5)
     if show_mtl_threshold
