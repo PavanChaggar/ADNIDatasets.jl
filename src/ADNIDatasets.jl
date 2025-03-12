@@ -5,11 +5,13 @@ using Setfield
 using Dates
 
 include("dktnames.jl")
+include("DataConverter.jl")
 
 struct ADNIScanData
     Date::Date
     SUVR::Vector{Float64}
     Volume::Vector{Float64}
+    ICV::Float64
     Ref_SUVR::Float64
     Ref_Vol::Float64
 end
@@ -27,7 +29,7 @@ struct ADNIDataset
     rois::Vector{String}
 end
 
-function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String)
+function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String, include_icv=false)
     sub = filter( x -> x.RID == subid, df )
     
     if "EXAMDATE" ∈ names(sub)
@@ -39,15 +41,30 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String)
     subvol = sub[!, vol_name.(roi_names)] |> dropmissing |> disallowmissing |> Array
     subref_suvr = sub[!, suvr_name.(reference_region)]
     subref_vol = sub[!, vol_name.(reference_region)]
+    
+    if include_icv
+        subicv = sub[!, :ICV] |> dropmissing |> disallowmissing |> Array
+    end
+
     n_scans = length(subdate)
     if n_scans == size(subsuvr, 1) == size(subvol, 1)
-       return  ADNISubject(
+        if include_icv
+            return  ADNISubject(
+                    subid,
+                    n_scans,
+                    subdate,
+                    [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subicv,
+                                subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
+            )
+        else 
+            return  ADNISubject(
                 subid,
                 n_scans,
                 subdate,
-                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], 
-                              subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
-        )
+                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], 0,
+                            subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
+            )
+        end
     end
 end
 
