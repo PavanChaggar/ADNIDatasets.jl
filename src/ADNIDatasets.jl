@@ -11,7 +11,8 @@ struct ADNIScanData
     Date::Date
     SUVR::Vector{Float64}
     Volume::Vector{Float64}
-    ICV::Float64
+    ICV::Union{Float64, Missing}
+    MRIDate::Union{Date, Missing}
     Ref_SUVR::Float64
     Ref_Vol::Float64
 end
@@ -44,6 +45,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
     
     if include_icv
         subicv = sub[!, :ICV] |> disallowmissing |> Array
+        subicvdate = sub[!, :MRIDate] |> dropmissing |> disallowmissing |> Array
     end
 
     n_scans = length(subdate)
@@ -53,7 +55,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
                     subid,
                     n_scans,
                     subdate,
-                    [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subicv[i],
+                    [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subicv[i], subicvdate[i],
                                 subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
             )
         else 
@@ -61,7 +63,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
                 subid,
                 n_scans,
                 subdate,
-                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], 0,
+                [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], missing, missing,
                             subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
             )
         end
