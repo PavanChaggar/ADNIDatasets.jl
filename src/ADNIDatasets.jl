@@ -45,7 +45,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
     
     if include_icv
         subicv = sub[!, :ICV] |> disallowmissing |> Array
-        subicvdate = sub[!, :MRIDate] |> dropmissing |> disallowmissing |> Array
+        subicvdate = sub[!, :MRIDate] |> disallowmissing |> Array
     end
 
     n_scans = length(subdate)
