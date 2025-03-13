@@ -50,7 +50,7 @@ function make_ucsf_df(data_df, dict_df, region_names; include_icv = true)
     return newdf[:, [names(data_df)[1:20]; labels]]
 end
 
-function add_icv(data_df, atr_df)
+function add_icv(data_df, atr_df; dt_threshold=180)
     df = deepcopy(data_df)
     df.ICV = fill(-1., size(df, 1))
     df.Has_ICV = fill(false, size(df, 1));    
@@ -60,7 +60,7 @@ function add_icv(data_df, atr_df)
             continue 
         end
         dt = abs.(_df.SCANDATE .- subdf.EXAMDATE)
-        if minimum(dt).value < 120
+        if minimum(dt).value < dt_threshold
             _df.ICV = subdf[argmin(dt), "CorticalVolume_icv"]
             _df.Has_ICV = true
         end
