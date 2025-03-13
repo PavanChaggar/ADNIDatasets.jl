@@ -138,6 +138,15 @@ function get_vol(data::ADNIDataset, subject)
     get_vol(subdata)
 end
 
+function get_icv(data::ADNISubject)
+    reduce(hcat, [get(data , @lens _.Data[i].ICV) for i in 1:data.n_scans])
+end
+
+function get_icv(data::ADNIDataset, subject)
+    subdata = get_subject_data(data, subject)
+    get_icv(subdata)
+end
+
 function get_dates(data::ADNISubject)
     get(data, @lens _.scan_dates)
 end
