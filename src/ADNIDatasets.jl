@@ -43,7 +43,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
     subref_vol = sub[!, vol_name.(reference_region)]
     
     if include_icv
-        subicv = sub[!, :ICV]
+        subicv = sub[!, :ICV] |> disallowmissing |> Array
     end
 
     n_scans = length(subdate)
@@ -53,7 +53,7 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; 
                     subid,
                     n_scans,
                     subdate,
-                    [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subicv,
+                    [ADNIScanData(subdate[i], subsuvr[i,:], subvol[i,:], subicv[i],
                                 subref_suvr[i], subref_vol[i]) for i in 1:n_scans]
             )
         else 
