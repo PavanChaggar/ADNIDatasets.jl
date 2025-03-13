@@ -170,6 +170,15 @@ function get_times(data::ADNIDataset, subject)
     get_times(subdata)
 end
 
+function get_mri_dates(data::ADNISubject)
+    reduce(hcat, [get(data , @lens _.Data[i].MRIDate) for i in 1:data.n_scans])
+end
+
+function get_mri_dates(data::ADNIDataset, subject)
+    subdata = get_subject_data(data, subject)
+    get_mri_dates(subdata)
+end
+
 function get_id(data::ADNIDataset, subject)
     subdata = get_subject_data(data, subject)
     get_id(subdata)
