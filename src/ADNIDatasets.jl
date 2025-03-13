@@ -29,7 +29,7 @@ struct ADNIDataset
     rois::Vector{String}
 end
 
-function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String, include_icv=false)
+function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String; include_icv=false)
     sub = filter( x -> x.RID == subid, df )
     
     if "EXAMDATE" ∈ names(sub)
@@ -68,7 +68,9 @@ function ADNISubject(subid, df::DataFrame, roi_names, reference_region::String, 
     end
 end
 
-function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=Inf, reference_region="inferiorcerebellum", qc=true)
+function ADNIDataset(df::DataFrame, roi_names=dktnames; 
+                     min_scans=1, max_scans=Inf, 
+                     reference_region="inferiorcerebellum", qc=true, include_icv=false)
     
     if qc
         df = filter(x -> x.qc_flag == 2, df) # check QC status
@@ -80,7 +82,7 @@ function ADNIDataset(df::DataFrame, roi_names=dktnames; min_scans=1, max_scans=I
 
     adnisubjects = Vector{ADNISubject}()
     for sub in multi_subs 
-        sub = ADNISubject(sub, df, roi_names, reference_region)
+        sub = ADNISubject(sub, df, roi_names, reference_region; include_icv=include_icv)
         if sub isa ADNISubject
             push!(adnisubjects, sub)
         end
