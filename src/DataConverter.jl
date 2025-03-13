@@ -63,6 +63,7 @@ function add_icv(data_df, atr_df; dt_threshold=180)
         if minimum(dt).value < dt_threshold
             _df.ICV = subdf[argmin(dt), "CorticalVolume_icv"]
             _df.Has_ICV = true
+            _df.MRIDate = subdf[argmin(dt), "EXAMDATE"]
         end
     end
     return df
