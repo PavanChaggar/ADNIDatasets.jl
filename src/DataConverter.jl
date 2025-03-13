@@ -54,6 +54,7 @@ function add_icv(data_df, atr_df; dt_threshold=180)
     df = deepcopy(data_df)
     df.ICV = fill(-1., size(df, 1))
     df.Has_ICV = fill(false, size(df, 1));    
+    df.MRIDate = Vector{Union{Missing, Date}}(undef, size(df,1))    
     for _df in eachrow(df)
         subdf = filter(x -> x.RID == _df.RID, atr_df)
         if size(subdf, 1) == 0
